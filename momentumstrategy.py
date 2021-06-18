@@ -50,7 +50,7 @@ def get_stocks_info(stocks):
 def hqm(df, portfolio_size):
     #Sort in place
     df.sort_values('one year', ascending = False, inplace = True)
-    df.reset_index(inplace = True)
+    df.reset_index(drop = True, inplace = True)
 
     #Calculate the percentiles and hqm score for each row
     for index, row in df.iterrows():
@@ -64,7 +64,7 @@ def hqm(df, portfolio_size):
     df_hqm = df[['ticker', 'price', 'hqm score']].copy()
     df_hqm.sort_values('hqm score', ascending = True, inplace = True)
     df_hqm = df_hqm[:50]
-    df_hqm.reset_index(inplace = True)
+    df_hqm.reset_index(drop = True, inplace = True)
 
     df_hqm['buy'] = 0
     
