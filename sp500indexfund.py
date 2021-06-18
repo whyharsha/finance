@@ -52,10 +52,10 @@ def get_stocks_info(stocks):
     return pd.DataFrame(data)
 
 def calculate_weights(df):
-    total_market = df['marketCap'].cumsum()
+    total_market = df['marketcap'].cumsum()
 
     for index, row in df.iterrows():
-        df[index]['numbertobuy'] = math.floor(float(row['marketCap']/total_market) * portfolio_size / row['price'])
+        df[index]['numbertobuy'] = math.floor(float(row['marketcap']/total_market) * portfolio_size / row['price'])
     
     return df
 
@@ -65,9 +65,9 @@ def chunks(lst, n):
 
 def process_stocks(stocks_file):
     stocks = get_stocks(stocks_file)
-    df_stocks = get_stock_info(stocks)
-    df_stocks = calculate_weights(df_stocks)
-    df_stocks.to_csv('buy_sp_500.csv', index = False)
+    stock_data = get_stock_info(stocks)
+    df = calculate_weights(stock_data)
+    df.to_csv('buy_sp_500.csv', index = False)
 
 if __name__ == "__main__":
     process_stocks(stocks_file)
