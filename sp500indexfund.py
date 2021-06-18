@@ -65,8 +65,8 @@ def chunks(lst, n):
 
 def process_stocks(stocks_file):
     stocks = get_stocks(stocks_file)
-    stock_data = get_stock_info(stocks)
-    df = calculate_weights(stock_data)
+    df = get_stocks_info(stocks)
+    df = calculate_weights(df)
     df.to_csv('buy_sp_500.csv', index = False)
 
 if __name__ == "__main__":
