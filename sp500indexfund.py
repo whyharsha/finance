@@ -67,8 +67,7 @@ def process_stocks(stocks_file):
     stocks = get_stocks(stocks_file)
     df = get_stocks_info(stocks)
     df = calculate_weights(df)
-    print(df)
-    #df.to_csv('buy_sp_500.csv', index = False)
+    df.to_csv('buy_sp_500.csv', index = False)
 
 if __name__ == "__main__":
     process_stocks(stocks_file)
