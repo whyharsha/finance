@@ -7,7 +7,7 @@ from secrets import IEX_CLOUD_API_TOKEN as iex_tkn
 
 stocks_file = 'sp_500_stocks.csv'
 api_url = "https://sandbox.iexapis.com/stable/"
-portfolio_size = 100000
+portfolio_size = 1000000
 
 def get_stocks(filename):
     stocks = pd.read_csv(filename)
@@ -39,7 +39,7 @@ def get_stocks_info(stocks):
         batch_endpt = f"stock/market/batch?symbols={symbol_string}&types=quote&token={iex_tkn}"
         response = requests.get(api_url+batch_endpt).json()
 
-        for symbol in symbol_string:
+        for symbol in symbol_string.split(","):
             data.append(
                 {
                     'ticker': symbol,
@@ -52,10 +52,10 @@ def get_stocks_info(stocks):
     return pd.DataFrame(data)
 
 def calculate_weights(df):
-    total_market = df['marketcap'].cumsum()
+    total_market = df['marketcap'].sum()
 
     for index, row in df.iterrows():
-        df[index]['numbertobuy'] = math.floor(float(row['marketcap']/total_market) * portfolio_size / row['price'])
+        df.iloc[[index, 3]] = math.floor(((row['marketcap']/total_market) * portfolio_size) / row['price'])
     
     return df
 
@@ -67,7 +67,8 @@ def process_stocks(stocks_file):
     stocks = get_stocks(stocks_file)
     df = get_stocks_info(stocks)
     df = calculate_weights(df)
-    df.to_csv('buy_sp_500.csv', index = False)
+    print(df)
+    #df.to_csv('buy_sp_500.csv', index = False)
 
 if __name__ == "__main__":
     process_stocks(stocks_file)
