@@ -48,7 +48,7 @@ def get_stocks_info(stocks):
     return pd.DataFrame(data)
 
 def hqm(df, portfolio_size):
-    #Sort in place
+    #handle missing values for one year and sort in place
     df.sort_values('one year', ascending = False, inplace = True)
     df.reset_index(drop = True, inplace = True)
 
@@ -58,11 +58,18 @@ def hqm(df, portfolio_size):
         df.at[index, 'six mnth percentile'] = stats.percentileofscore(df['six mnth'], row['six mnth'])
         df.at[index, 'three mnth percentile'] = stats.percentileofscore(df['three mnth'], row['three mnth'])
         df.at[index, 'one mnth percentile'] = stats.percentileofscore(df['one mnth'], row['one mnth'])
-        df.at[index, 'hqm score'] = mean([row['one year'], row['six mnth'], row['three mnth'], row['one mnth']])
+
+        vals = []
+        vals.append(df.at[index, 'one year percentile'])
+        vals.append(df.at[index, 'six mnth percentile'])
+        vals.append(df.at[index, 'three mnth percentile'])
+        vals.append(df.at[index, 'one mnth percentile'])
+
+        df.at[index, 'hqm score'] = mean(vals)
 
     #create a copy with just the cols we need, sort by hqm and keep the top 50
     df_hqm = df[['ticker', 'price', 'hqm score']].copy()
-    df_hqm.sort_values('hqm score', ascending = True, inplace = True)
+    df_hqm.sort_values('hqm score', ascending = False, inplace = True)
     df_hqm = df_hqm[:50]
     df_hqm.reset_index(drop = True, inplace = True)
 
